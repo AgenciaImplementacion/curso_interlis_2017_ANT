@@ -33,17 +33,28 @@ MODEL Catastro_COL_V1_2_ES
 				 enComunidad
 			 ),
 			 publico (
-				 !!Completar
+				 nacional,
+				 departamental,
+				 municipal
 			 )
 	  );
 
       COL_EstratoTipo = (
-         !!Completar
+         estrato0,
+		 estrato1,
+ 		 estrato2,
+ 		 estrato3,
+		 estrato4,
+		 estrato5,
 		 estrato6
       );
 	  
 	  COL_PredioTipoPublicoTipo = (
-		 !!Completar
+		 parqueNacional,
+		 reservaNatural,
+		 ejido,
+		 presuntoBaldio,
+		 fiscalPatrimonial,
 		 bienUsoPublico (
 			 alameda,
 			 anden,
@@ -122,7 +133,8 @@ MODEL Catastro_COL_V1_2_ES
    TOPIC Catastro_Registro =
 	  DEPENDS ON LADM_V1.External, LADM_V1.Special_Classes, LADM_V1.Spatial_Unit, LADM_V1.Administrative, LADM_V1.Surverying_and_Representation, LADM_V1.Party;
 
-   !! Clase Predio
+   !! Predio  -  Catalogo de Objetos: Grupo Catastro
+
       CLASS Predio EXTENDS LADM_V1.Administrative.LA_BAUnit =
          departamento: MANDATORY TEXT*2;
 		 municipio: MANDATORY TEXT*3;
@@ -137,10 +149,10 @@ MODEL Catastro_COL_V1_2_ES
 		 piso: MANDATORY TEXT*2;
 		 unidad: MANDATORY TEXT*4;
 		 vigenciaFiscal: XMLDate;
-		 avaluoPredio: MANDATORY Peso;
+		 avaluoPredio: MANDATORY Peso;				!! funcion de sumar avaluoTerreno + avaluoConstrucction
          FMI: TEXT*20;
          nomenclatura: TEXT*100;
-         NUIP: Integer;								
+         NUIP: Integer;								!! por definir por operadores pilotos CM
          numeroPredial: MANDATORY TEXT*30;
          numeroPredialAnterior: TEXT*20;
          predioTipo: MANDATORY COL_PredioTipo;
@@ -154,13 +166,36 @@ MODEL Catastro_COL_V1_2_ES
 
 
 
-   !! Clase InteresadoNatural
+   !! Paquete Interesados de la ISO19152
+
       CLASS InteresadoNatural EXTENDS LADM_V1.Party.LA_Party =
-		 !!Completar
+		 COLrol: LIST {0..*} OF COL_RolInteresadoEstruct;
+         documentoIdentidad: TEXT*10;
+         tipoDocumento: COL_InteresadoDocumentoTipo;		 
+		 organoEmisor: TEXT*20;
+		 fechaEmision: XMLDate;
+         primerApellido: TEXT*50;
+         primerNombre: TEXT*50;
+         segundoApellido: TEXT*50;
+         segundoNombre: TEXT*50;
+		 nacionalidad: TEXT*20;
+         fechaNacimiento: MANDATORY XMLDate;
+		 lugarNacimiento: TEXT*100;
+         telefono1: TEXT*20;
+		 telefono2: TEXT*20;
+		 direccion: TEXT*100;
+         correoElectronico: TEXT*50;
+         origenDatos: COL_InstitucionTipo;
+		 cabeza_hogar: BOOLEAN;
+		 discapacidad: BOOLEAN;
+		 genero: MANDATORY COL_Genero;
+		 habita_predio: BOOLEAN;
+		 etnia: TEXT*20;
       END InteresadoNatural;
 
 
-   !! Clase Derecho
+   !! Clase RRR de la ISO19152
+
       CLASS Derecho EXTENDS LADM_V1.Administrative.LA_Right =
          type (EXTENDED): MANDATORY (
 			 derechoColectivo,
@@ -185,7 +220,8 @@ MODEL Catastro_COL_V1_2_ES
       END Derecho;
 	  
 	  ASSOCIATION predioDerecho =
-         !!Completar
+         predio -- {1..1} Predio;
+         derecho -- {0..*} Derecho;
       END predioDerecho;
 	  
 	  ASSOCIATION derechoInteresado =

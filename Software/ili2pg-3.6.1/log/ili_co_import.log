@@ -1,0 +1,37 @@
+Info: ili2pg-3.6.1-20170120
+Info: ili2c-4.6.1-20170109
+Info: java.version 1.8.0_111
+Info: user.name <user>
+Info: maxMemory 3715584 KB
+Info: dburl <jdbc:postgresql://localhost:5432/ladm_co_exported_data>
+Info: dbusr <postgres>
+Info: databaseProduct <PostgreSQL>
+Info: databaseVersion <9.5.4>
+Info: driverVersion <PostgreSQL 9.4.1208.jre6>
+Info: postGISVersion <POSTGIS="2.2.2 r14797" GEOS="3.5.0-CAPI-1.9.0 r4090" PROJ="Rel. 4.9.1, 04 March 2015" GDAL="GDAL 2.0.2, released 2016/01/26" LIBXML="2.7.8" LIBJSON="0.12" RASTER>
+Info: compile models...
+Info: lookup model <Catastro_COL_V1_2_ES> in repository <models/>
+Info: lookup model <ISO19107_V1_MAGNABOG> 2.3 in repository <models/>
+Info: lookup model <LADM_V1> 2.3 in repository <models/>
+Info: ilifile <models\ISO19107_V1_MAGNABOG.ili>
+Info: ilifile <models\LADM_V1.ili>
+Info: ilifile <models\Catastro_COL_V1_2_ES.ili>
+Info: create table structure...
+Info: process data file...
+Info: data <export_ladm_co.xtf>
+Info: Basket Catastro_COL_V1_2_ES.Catastro_Registro(oid Catastro_COL_V1_2_ES.Catastro_Registro)...
+Info: Basket Catastro_COL_V1_2_ES.LimitesPoliticoAdministrativos(oid Catastro_COL_V1_2_ES.LimitesPoliticoAdministrativos)...
+Info: Basket Catastro_COL_V1_2_ES.LimitesOperativosCatastro(oid Catastro_COL_V1_2_ES.LimitesOperativosCatastro)...
+Info: Basket Catastro_COL_V1_2_ES.Auxiliares(oid Catastro_COL_V1_2_ES.Auxiliares)...
+Info: Basket Catastro_COL_V1_2_ES.Avaluos(oid Catastro_COL_V1_2_ES.Avaluos)...
+Info: Basket Catastro_COL_V1_2_ES.Ficha(oid Catastro_COL_V1_2_ES.Ficha)...
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.Auxiliares BID=Catastro_COL_V1_2_ES.Auxiliares
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.Avaluos BID=Catastro_COL_V1_2_ES.Avaluos
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.Catastro_Registro BID=Catastro_COL_V1_2_ES.Catastro_Registro
+Info:       1 objects in CLASS Catastro_COL_V1_2_ES.Catastro_Registro.InteresadoNatural
+Info:       1 objects in CLASS Catastro_COL_V1_2_ES.Catastro_Registro.Predio
+Info:       2 objects in CLASS LADM_V1.Oid
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.Ficha BID=Catastro_COL_V1_2_ES.Ficha
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.LimitesOperativosCatastro BID=Catastro_COL_V1_2_ES.LimitesOperativosCatastro
+Info: export_ladm_co.xtf: Catastro_COL_V1_2_ES.LimitesPoliticoAdministrativos BID=Catastro_COL_V1_2_ES.LimitesPoliticoAdministrativos
+Info: ...import done

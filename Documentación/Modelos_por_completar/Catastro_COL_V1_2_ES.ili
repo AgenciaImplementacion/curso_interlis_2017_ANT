@@ -1,0 +1,198 @@
+!!-----------------------------------------------------------
+!!
+!! Modelo INTERLIS
+!!
+!!-----------------------------------------------------------
+INTERLIS 2.3;
+
+MODEL Catastro_COL_V1_2_ES
+
+   AT "http://www.igac.gov.co/models"
+   VERSION "2016-12-14" =
+
+   IMPORTS UNQUALIFIED INTERLIS;  !! modelo piloto catastro multiproposito
+   IMPORTS UNQUALIFIED ISO19107_V1_MAGNABOG;  !! modelo espacial, coordenadas proyectadas MAGNA Bogota
+   IMPORTS LADM_V1;  !! modelo LADM_ISO19152 core en espanol
+   
+   UNIT
+
+	  PesoColombiano [COP] EXTENDS INTERLIS.MONEY;
+	  Area (ABSTRACT) = (INTERLIS.LENGTH*INTERLIS.LENGTH);
+	  MetroCuadrado [m2] EXTENDS Area = (INTERLIS.m*INTERLIS.m);
+	  Centrimetro [cm] = 1/100 [m];
+
+   DOMAIN
+   
+	  Integer = 0 .. 999999999;
+      Real = 0.000 .. 999999999.999;
+      Peso = 0 .. 999999999999 [COP];
+
+	  COL_PredioTipo = (
+		 privado (
+				 individual,
+				 enComunidad
+			 ),
+			 publico (
+				 !!Completar
+			 )
+	  );
+
+      COL_EstratoTipo = (
+         !!Completar
+		 estrato6
+      );
+	  
+	  COL_PredioTipoPublicoTipo = (
+		 !!Completar
+		 bienUsoPublico (
+			 alameda,
+			 anden,
+			 areaControlAmbiental,
+			 bahiaEstacionamiento,
+			 berma,
+			 calzada,
+			 cicloRuta,
+			 escenarioCultural,
+			 escenarioDeportivo,
+			 estacionamientoPublico,
+			 humedal,
+			 lago,
+			 madreVieja,
+			 malecon,
+			 parqueUrbano,
+			 playa,
+			 playon,
+			 plaza,
+			 plazoleta,
+			 puente,
+			 rio,
+			 sabanaComunal,
+			 sardinel,
+			 separador,
+			 terrenoBajamar,
+			 tunelPeatonal,
+			 via,
+			 zonaEquipamientoComunal
+      	 ), 
+		 otro
+	  );
+	  
+	  COL_FormalidadTipo = (
+         formal, 
+         informal
+      );
+	  
+	  COL_InteresadoDocumentoTipo = (
+         cedulaCiudadania,
+         cedulaExtranjeria,
+         NIT,
+         pasaporte,
+         tarjetaIdentidad
+      );
+	  
+	  COL_Genero = (
+		 femenino,
+		 masculino,
+		 otro
+	  );
+	  
+	  COL_InstitucionTipo = (
+         registraduriaNacional,
+		 registroPropiedad,
+		 catastroIGAC,
+		 catastroDescentralizado,
+		 URT,
+		 ANT		 
+      );
+	
+	  COL_RolInteresadoTipo = (
+         abogadoDemandas,
+         administradorEstado,
+         banco,
+         ciudadano,
+         juez,
+         notario,
+         reconocedorAgrimensor
+      );
+	
+	STRUCTURE COL_RolInteresadoEstruct =
+         tipo: COL_RolInteresadoTipo;
+    END COL_RolInteresadoEstruct;
+
+   TOPIC Catastro_Registro =
+	  DEPENDS ON LADM_V1.External, LADM_V1.Special_Classes, LADM_V1.Spatial_Unit, LADM_V1.Administrative, LADM_V1.Surverying_and_Representation, LADM_V1.Party;
+
+   !! Clase Predio
+      CLASS Predio EXTENDS LADM_V1.Administrative.LA_BAUnit =
+         departamento: MANDATORY TEXT*2;
+		 municipio: MANDATORY TEXT*3;
+		 zona: MANDATORY TEXT*2;
+		 sector: MANDATORY TEXT*2;
+		 localidadComuna: MANDATORY TEXT*2;		
+		 barrio: MANDATORY TEXT*2;
+		 manzana_vereda: MANDATORY TEXT*4;
+		 terreno: MANDATORY TEXT*4;
+		 condicion_prop: MANDATORY TEXT*1;
+		 edificio: MANDATORY TEXT*2;
+		 piso: MANDATORY TEXT*2;
+		 unidad: MANDATORY TEXT*4;
+		 vigenciaFiscal: XMLDate;
+		 avaluoPredio: MANDATORY Peso;
+         FMI: TEXT*20;
+         nomenclatura: TEXT*100;
+         NUIP: Integer;								
+         numeroPredial: MANDATORY TEXT*30;
+         numeroPredialAnterior: TEXT*20;
+         predioTipo: MANDATORY COL_PredioTipo;
+		 tipoPredioPublico: COL_PredioTipoPublicoTipo;
+		 estrato: COL_EstratoTipo;
+         informalidad: MANDATORY COL_FormalidadTipo;
+		 geometria: GM_Surface2D;
+	  UNIQUE 
+         uID->namespace, uID->localId;
+      END Predio;
+
+
+
+   !! Clase InteresadoNatural
+      CLASS InteresadoNatural EXTENDS LADM_V1.Party.LA_Party =
+		 !!Completar
+      END InteresadoNatural;
+
+
+   !! Clase Derecho
+      CLASS Derecho EXTENDS LADM_V1.Administrative.LA_Right =
+         type (EXTENDED): MANDATORY (
+			 derechoColectivo,
+			 mineriaDerecho (
+				explotacion,
+				exploracion
+			 ),
+			 nudaPropiedad,
+			 ocupacion,
+			 posesion,
+			 propiedad,
+			 tenencia (
+				arrendamiento,
+				anticresis,
+				comodato,
+				aparceria,
+				otro
+			 ),
+			 usufructo
+		  );
+		 codigoRegistralDerecho: MANDATORY TEXT*3;     
+      END Derecho;
+	  
+	  ASSOCIATION predioDerecho =
+         !!Completar
+      END predioDerecho;
+	  
+	  ASSOCIATION derechoInteresado =
+         derecho (EXTERNAL) -- {0..*} Derecho;
+         interesado -- {0..1} InteresadoNatural;
+      END derechoInteresado;
+
+   END Catastro_Registro;
+
+END Catastro_COL_V1_2_ES.

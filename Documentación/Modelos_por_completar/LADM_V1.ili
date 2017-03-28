@@ -1,0 +1,462 @@
+!!----------------------------------------------------------
+!!
+!! ISO 19152 LADM modelled with INTERLIS 2
+!!
+!!----------------------------------------------------------
+!! revision history
+!!----------------------------------------------------------
+!! 
+!! 27.01.2014/mg: initial version
+!! 02.02.2014/mg: checked with compiler version 4.4.14
+!! 17.11.2014/mg: checked with compiler version 4.5.3
+!! 07.03.2016/mg: simplification
+!!
+!!----------------------------------------------------------
+!!
+!! (c) Swiss Land Management (www.swisslm.ch)
+!!
+!!----------------------------------------------------------
+
+INTERLIS 2.3;
+
+MODEL LADM_V1 (en) 
+
+   AT "http://www.swisslm.ch/models"
+   VERSION "2016-03-07" =
+
+      IMPORTS UNQUALIFIED INTERLIS;
+      IMPORTS UNQUALIFIED ISO19107_V1_MAGNABOG; !! Spatial Schema
+
+   DOMAIN
+
+      Integer = -2000000000 .. 2000000000;
+      Real = -2000000000.000 .. 2000000000.000;
+      CharacterString = TEXT*255;
+      Currency = -2000000000.00 .. 2000000000.00;
+
+      LA_AvailabilityStatusType = (
+         original,
+         destroyed,
+         incomplete,
+         other
+      );
+
+      !! from ISO8601 - ???
+      ISO8601_ISO14825_Type = (unknown); !! to do !!!
+
+      !! to do !!!
+      DQ_EvaluationMethodTypeCode = (
+         other
+      );
+
+      CI_RoleCode = (
+         resourceProvider,
+         custodian,
+         owner,
+         user,
+         distributor,
+         originator,
+         pointOfContact,
+         pricipalInvesigator,
+         processor,
+         publisher,
+         author
+      );
+
+      STRUCTURE Oid =
+         namespace: MANDATORY CharacterString;
+         localId: MANDATORY CharacterString;
+      END Oid;
+
+      STRUCTURE Fraction =
+         denominator: MANDATORY Integer;
+         numerator: MANDATORY Integer;
+      END Fraction;
+
+      STRUCTURE Image =
+         !! to do !!!
+      END Image;
+
+      STRUCTURE MultiMediaType =
+         !! to do !!!
+      END MultiMediaType;
+
+      STRUCTURE MD_Identifier =
+         !! to do !!!
+      END MD_Identifier;
+
+      STRUCTURE DQ_Result =
+         !! to do !!!
+      END DQ_Result;
+
+      STRUCTURE CI_Citation =
+         !! to do !!!
+      END CI_Citation;
+
+      STRUCTURE DQ_Element =
+         nameOfMeasure: CharacterString;
+         measureIdentification: MD_Identifier;
+         measureDescription: CharacterString;
+         evaluationMethod: DQ_EvaluationMethodTypeCode;
+         evaluationMethodDescription: CharacterString;
+         evaluationProcedure: CI_Citation;
+         dateTime: XMLDateTime;
+         result: DQ_Result;
+      END DQ_Element;
+
+      STRUCTURE CI_Telephone =
+         !! to do !!!
+      END CI_Telephone;
+
+      STRUCTURE CI_Address =
+         !! to do !!!
+      END CI_Address;
+
+      STRUCTURE CI_OnlineResource =
+         !! to do !!!
+      END CI_OnlineResource;
+
+      STRUCTURE CI_Contact =
+         phone: CI_Telephone;
+         address: CI_Address;
+         onlinResource: CI_OnlineResource;
+         hoursOfService: CharacterString;
+         contactInstructions: CharacterString;
+      END CI_Contact;
+
+      STRUCTURE CI_ResponsibleParty =
+         invidualName: CharacterString;
+         organisationName: CharacterString;
+         positionName: CharacterString;
+         contactInfo: CI_Contact;
+         role: CI_RoleCode;
+      END CI_ResponsibleParty;
+
+      STRUCTURE VersionedObject =
+         beginLifespanVersion: XMLDateTime;
+         endLifespanVersion: XMLDateTime;
+         quality: DQ_Element;
+         source: CI_ResponsibleParty;
+      END VersionedObject;
+
+      STRUCTURE CI_PresentationFromCode =
+         !! to do !!!
+      END CI_PresentationFromCode;
+
+      STRUCTURE CC_OperationMethod =
+         !! to to !!!
+      END CC_OperationMethod;
+
+      STRUCTURE OM_Observation =
+         resultQuality: DQ_Element;
+      END OM_Observation;
+
+      STRUCTURE OM_Process =
+      END OM_Process;
+
+   TOPIC External (ABSTRACT) =
+
+      DOMAIN
+
+         STRUCTURE ExtAddress =
+            addressAreaName: CharacterString;
+            addressCoordinate : GM_Point2D;
+            addressID: MANDATORY Oid;
+            buildingName: CharacterString;
+            buildingNumber: CharacterString;
+            city: CharacterString;
+            country: CharacterString;
+            postalCode: CharacterString;
+            postBox: CharacterString;
+            state: CharacterString;
+            streetName: CharacterString;
+         END ExtAddress;
+
+         STRUCTURE ExtPhysicalBuildingUnit =
+            extAddressID: ExtAddress;
+         END ExtPhysicalBuildingUnit;
+
+         STRUCTURE ExtParty =
+            extAddressID: ExtAddress;
+            fingerprint: Image;
+            name: CharacterString;
+            partyID: Oid;
+            photo: Image;
+            signature: Image;        
+         END ExtParty;
+
+         STRUCTURE ExtPhysicalUtilityNetwork =
+            directed: BOOLEAN;
+            extPartyManagerID: ExtParty;
+         END ExtPhysicalUtilityNetwork;
+
+         STRUCTURE ExtArchive =
+            !! to do !!!
+         END ExtArchive;
+
+   END External;
+
+   TOPIC Special_Classes (ABSTRACT) =
+
+      DEPENDS ON External;
+
+      CLASS LA_Source (ABSTRACT) =
+         acceptance: XMLDateTime;
+         availabilityStatus: MANDATORY LA_AvailabilityStatusType;
+         extArchiveID: LADM_V1.External.ExtArchive;
+         liveSpanStamp: XMLDateTime;
+         mainType: CI_PresentationFromCode;
+         quality: LIST {0..*} OF DQ_Element;
+         recordation: XMLDateTime;
+         sID: MANDATORY Oid;
+         source: CI_ResponsibleParty;
+         submission: XMLDateTime;
+      END LA_Source;
+
+   END Special_Classes;
+
+   TOPIC Spatial_Unit (ABSTRACT) =
+
+      DOMAIN
+
+         STRUCTURE LA_VolumeValue =
+            volumeSize: MANDATORY 0.0 .. 99999999999999.9 [m];
+            type: MANDATORY (
+               official,
+               calculated,
+               other
+            );
+         END LA_VolumeValue;
+
+         STRUCTURE LA_AreaValue =
+            areaSize: MANDATORY 0.0 .. 99999999999999.9 [m];
+            type: MANDATORY (
+               official,
+               calculated,
+               other
+            );
+         END LA_AreaValue;
+
+      CLASS LA_SpatialUnit (ABSTRACT) EXTENDS VersionedObject =
+         extAddressID: LADM_V1.External.ExtAddress;
+         area: LA_AreaValue;
+         dimension: (
+            Dim2D,
+            Dim3D,
+            other
+         );
+         label: TEXT*255;
+         referencePoint: GM_Point2D;
+         suID: MANDATORY Oid;
+         surfaceRelation: (
+            on_surface,
+            above_surface,
+            below_surface,
+            other
+         );
+         volume: LA_VolumeValue;
+      END LA_SpatialUnit;
+
+      CLASS LA_LegalSpaceBuildingUnit (ABSTRACT) EXTENDS LA_SpatialUnit =
+         extPhysicalBuildingUnitID: LADM_V1.External.ExtPhysicalBuildingUnit;
+         type: (
+            private,
+            commercial,
+            state,
+            other
+         );
+      END LA_LegalSpaceBuildingUnit;
+
+      CLASS LA_LegalSpaceUtilityNetwork (ABSTRACT) EXTENDS LA_SpatialUnit =
+         extPhysicalNetworkID: LADM_V1.External.ExtPhysicalUtilityNetwork;
+         status: (
+            planned,
+            in_use,
+            out_of_service,
+            other
+         );
+         type: (
+            electricity,
+            gas,
+            water,
+            waste_water,
+            other
+         );
+      END LA_LegalSpaceUtilityNetwork;
+
+   END Spatial_Unit;
+
+   TOPIC Administrative (ABSTRACT) =
+
+      DEPENDS ON Spatial_Unit;
+   
+      CLASS LA_RRR (ABSTRACT) EXTENDS VersionedObject =
+         rID: MANDATORY Oid;
+         description: CharacterString;
+         Share: Fraction;
+         ShareCheck: BOOLEAN;
+         timeSpec: ISO8601_ISO14825_Type;
+      END LA_RRR;
+
+      CLASS LA_Right (ABSTRACT) EXTENDS LA_RRR =
+         type: MANDATORY (
+            ownership,
+            customary,
+            lease,
+            other
+         );
+      END LA_Right;
+
+      CLASS LA_Restriction (ABSTRACT) EXTENDS LA_RRR =
+         partyRequired: BOOLEAN;
+         type: MANDATORY (
+            servitutes,
+            other
+         );
+      END LA_Restriction;
+
+      CLASS LA_Responsibility (ABSTRACT) EXTENDS LA_RRR =
+         type: MANDATORY (
+            waterway_maintenance,
+            other
+         );
+      END LA_Responsibility;
+
+      CLASS LA_BAUnit (ABSTRACT) EXTENDS VersionedObject =
+         uID: MANDATORY Oid;
+         name: CharacterString;
+         type: MANDATORY (
+            basic_property_unit,
+            right_unit,
+            other
+         );
+      END LA_BAUnit;
+
+      CLASS LA_RequiredRelationshipBAUnit (ABSTRACT) EXTENDS VersionedObject =
+         relationShip: CharacterString;
+      END LA_RequiredRelationshipBAUnit;
+
+      CLASS LA_Mortgage (ABSTRACT) EXTENDS LA_Restriction =
+         amount: Currency;
+         interestRate: Real;
+         ranking: Integer;
+         mtype: (
+            linear,
+            micro_credit,
+            other
+         );
+      END LA_Mortgage;
+
+      CLASS LA_AdministrativeSource (ABSTRACT) EXTENDS LADM_V1.Special_Classes.LA_Source =
+         text: MultiMediaType;
+         type: MANDATORY (
+            deed,
+            title,
+            other
+         );
+      END LA_AdministrativeSource;
+
+   END Administrative;
+
+   TOPIC Surverying_and_Representation (ABSTRACT) =
+
+      DEPENDS ON LADM_V1.Special_Classes,Spatial_Unit,Administrative;
+
+      DOMAIN
+
+         STRUCTURE LA_Transformation =
+            transformation: MANDATORY CC_OperationMethod;
+            transformedLocation: MANDATORY GM_Point2D;
+         END LA_Transformation;
+   
+      CLASS LA_Point (ABSTRACT) EXTENDS VersionedObject =
+         interpolationRole: (
+            start,
+            end,
+            mid_arc,
+            other
+         );
+         monumentation: MANDATORY (
+            beacon,
+            marker,
+            other
+         );
+         originalLocation: MANDATORY GM_Point2D;
+         pID: MANDATORY Oid;
+         pointType: MANDATORY (
+            control,
+            cadastral,
+            other
+         );
+         !! LI_Lineage undefined, to do !!!
+         !! productionMethod: LI_Lineage;
+         transAndResult: LA_Transformation;
+         !! function
+         !! getTransResult(): GM_Point;
+      END LA_Point;
+
+      CLASS LA_SpatialSource (ABSTRACT) EXTENDS LADM_V1.Special_Classes.LA_Source =
+         measurements: LIST {0 .. *} OF OM_Observation;
+         procedure: OM_Process;
+         type: MANDATORY (
+            survey,
+            plan,
+            areal_photo,
+            other
+         );
+      END LA_SpatialSource;
+
+      CLASS LA_BoundaryFaceString (ABSTRACT) EXTENDS VersionedObject =
+         bfsID: MANDATORY Oid;
+         geometry: GM_MultiCurve3D;
+         locationByText: CharacterString;
+      END LA_BoundaryFaceString;
+
+      CLASS LA_BoundaryFace (ABSTRACT) EXTENDS VersionedObject =
+         bfID: MANDATORY Oid;
+         geometry: GM_MultiSurface3D;
+         locationByText: CharacterString;
+      END LA_BoundaryFace;
+
+   END Surverying_and_Representation;
+
+   TOPIC Party (ABSTRACT) =
+
+      DOMAIN
+
+         LA_GroupPartyType = (
+            association,
+            family,
+            other
+         );
+
+         LA_PartyType = (
+            natural_Person,
+            nonnatural_person,
+            other
+         );
+
+         STRUCTURE LA_PartyRoleType =
+            type: (
+               surveyor,
+               notary,
+               other
+            );
+         END LA_PartyRoleType;
+
+      CLASS LA_Party (ABSTRACT) EXTENDS VersionedObject =
+         ExPID: Oid;
+         name: CharacterString;
+         pID: MANDATORY Oid;
+         role: LIST {0..*} OF LA_PartyRoleType;
+         type: MANDATORY LA_PartyType;   
+      END LA_Party;
+
+      CLASS LA_GroupParty (ABSTRACT) EXTENDS LA_Party =
+         groupID: MANDATORY Oid;
+         ptype: MANDATORY LA_GroupPartyType;
+      END LA_GroupParty;
+
+   END Party;
+
+END LADM_V1.
