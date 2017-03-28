@@ -5,7 +5,7 @@
 !!-----------------------------------------------------------
 INTERLIS 2.3;
 
-MODEL Catastro_COL_V1_2_ES
+MODEL Catastro_COL_V1_2_ES (es)
 
    AT "http://www.igac.gov.co/models"
    VERSION "2016-12-14" =
@@ -31,9 +31,6 @@ MODEL Catastro_COL_V1_2_ES
 		 privado (
 				 individual,
 				 enComunidad
-			 ),
-			 publico (
-				 !!Completar
 			 )
 	  );
 
@@ -184,9 +181,12 @@ MODEL Catastro_COL_V1_2_ES
 		 codigoRegistralDerecho: MANDATORY TEXT*3;     
       END Derecho;
 	  
+	  
+	  /*
 	  ASSOCIATION predioDerecho =
          !!Completar
       END predioDerecho;
+	  */
 	  
 	  ASSOCIATION derechoInteresado =
          derecho (EXTERNAL) -- {0..*} Derecho;
